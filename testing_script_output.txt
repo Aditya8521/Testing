@@ -1,0 +1,57 @@
+log4j:WARN No such property [maxFileSize] in org.apache.log4j.DailyRollingFileAppender.
+
+Logging initialized using configuration in file:/etc/hive/2.6.0.3-8/0/hive-log4j.properties
+set hist_table = ea_common.gnrl_ldgr_dcmt_ln_itm_history_new
+set raw_table  = ea_common.gnrl_ldgr_dcmt_ln_itm_rw_new
+set ref_table  = ea_common.gnrl_ldgr_dcmt_ln_itm_ref_new
+set cons_table = ea_common.gnrl_ldgr_dcmt_ln_itm_dmnsn_enr_new
+set err_table  = ea_common.gnrl_ldgr_dcmt_ln_itm_err
+set fl_nm      = GL Documents - Line Items Incremental
+set ld_jb_nr   = EA 1.1b-031
+set src_sys_ky = 1
+set hive.cli.print.header=true
+set hive.execution.engine=tez
+
+
+select '${hiveconf:payload_id}' as Payload 
+Query ID = srvc_nextgen_hitg_20180507062233_bf35f88a-8008-4632-8c5e-0fd4736eecf2
+Total jobs = 1
+Launching Job 1 out of 1
+Status: Running (Executing on YARN cluster with App id application_1524987396424_79341)
+
+OK
+payload
+8127552
+Time taken: 17.008 seconds, Fetched: 1 row(s)
+
+select '${hiveconf:date}' as Date_value
+Query ID = srvc_nextgen_hitg_20180507062251_d63c858b-26fb-4ecb-ae8b-c4d7bf61a3e1
+Total jobs = 1
+Launching Job 1 out of 1
+Status: Running (Executing on YARN cluster with App id application_1524987396424_79341)
+
+OK
+date_value
+2018-04-05
+Time taken: 5.869 seconds, Fetched: 1 row(s)
+
+*************************************************************************************
+Step 1: Check count of records transferred from history layer to raw layer
+*************************************************************************************
+
+
+
+SELECT  COUNT(*) as  hist_count FROM ${hiveconf:hist_table} WHERE payload like  '%${hiveconf:payload_id}%'
+Query ID = srvc_nextgen_hitg_20180507062257_73c51eaf-f316-4c97-ad59-09857c4c17e8
+Total jobs = 1
+Launching Job 1 out of 1
+Status: Running (Executing on YARN cluster with App id application_1524987396424_79341)
+
+OK
+hist_count
+1
+Time taken: 8.452 seconds, Fetched: 1 row(s)
+
+
+SELECT  concat(${hiveconf:raw_table},"raw_count:",count(*)) as raw_count FROM ${hiveconf:raw_table} WHERE src_sys_btch_nr ='${hiveconf:payload_id}' and date(ins_gmt_ts)='${hiveconf:date}'
+FAILED: SemanticException [Error 10025]: Line 3:15 Expression not in GROUP BY key 'gnrl_ldgr_dcmt_ln_itm_rw_new'
